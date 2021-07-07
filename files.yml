@@ -1,0 +1,45 @@
+---
+- hosts: internet_pi
+
+  pre_tasks:
+    - name: Load configuration.
+      ansible.builtin.include_vars: config.yml
+
+  tasks:
+      - name: Check if pi-hole dir exists
+        stat:
+          path: "{{ config_dir }}/pi-hole/"
+        register: pi_hole_dir
+
+      - name: p
+        debug:
+          msg: "pi-hole exists"
+        when: pi_hole_dir.stat.exists
+      - name: c
+        debug: 
+          msg: "{{config_dir}}/internet_monitoring"
+
+
+      - name: Remove pi hole files
+        file: 
+          path: ~/pi-hole
+          state: absent
+
+      - name: Remove internet-monitoring files
+        file:
+          path: ~/internet_monitoring
+          state: absent
+      # - name: chown -Rh 
+      #   become: true
+      #   file:
+      #     path: ~/pi-hole
+      #     state: directory
+      #     recurse: yes
+      #     owner: pi
+      #     group: pi
+
+      # - name: Remove pi hole files again
+      #   shell: /usr/bin/rm -rf ~/pi-hole
+
+
+

@@ -1,0 +1,60 @@
+---
+- hosts: internet_pi
+  become: true
+
+  pre_tasks:
+    - name: Load configuration.
+      ansible.builtin.include_vars: config.yml
+
+  tasks:
+    - name: Check if internet-monitoring dir exists
+      stat:
+        path: /home/pi/internet-monitoring/
+      register: internet_monitoring_dir
+    
+    - name: Check if pi-hole dir exists
+      stat:
+        path: /home/pi/pi-hole
+      register: pi_hole_dir
+    
+    - name: p
+      debug:
+        var: pi_hole_dir
+    
+    - name: i
+      debug:
+        msg: "internet-monitoring exists"
+      when: internet_monitoring_dir.stat.exists
+        
+
+    - name: shut down internet monitoring dockers
+      community.docker.docker_compose:
+        project_src: "{{ config_dir }}/internet-monitoring"
+        build: no
+        stopped: yes
+      become: false
+      when: internet_monitoring_dir.stat.exists
+
+    - name: shut down pi-hole docker
+      community.docker.docker_compose:
+        project_src: "{{ config_dir }}/pi-hole"
+        build: no
+        stopped: yes
+      become: false
+      when: pi_hole_dir.stat.exists
+
+    - name: Remove internet monitoring files
+      file: 
+        path: /home/pi/internet-monitoring/
+        state: absent
+    
+    - name: Remove pi hole files
+      file: 
+        path: /home/pi/pi-hole/
+        state: absent
+    - name: Docker system prune
+      community.docker.docker_prune:
+        containers: yes
+        images: yes
+        networks: yes
+        volumes: yes
