@@ -25,16 +25,29 @@ Other features:
 
 **IMPORTANT NOTE**: If you use the included Internet monitoring, it will download a decently-large amount of data through your Internet connection on a daily basis. Don't use it, or tune the `internet-monitoring` setup to not run the speedtests as often, if you have a metered connection!
 
+## Recommended Pi and OS
+
+You should use a Raspberry Pi 4 model B or better. The Pi 4 and later generations of Pi include a full gigabit network interface and enough I/O to reliably measure fast Internet connections.
+
+Older Pis work, but have many limitations, like a slower CPU and sometimes very-slow NICs that limit the speed test capability to 100 Mbps or 300 Mbps on the Pi 3 model B+.
+
+Other computers and VMs may run this configuration as well, but it is only regularly tested on a Raspberry Pi.
+
+The configuration is tested against Raspberry Pi OS, both 64-bit and 32-bit, and runs great on that or a generic Debian installation.
+
+It should also work with Ubuntu for Pi, or Arch Linux, but has not been tested on other operating systems.
+
 ## Setup
 
   1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html). The easiest way (especially on Pi or a Debian system) is via Pip:
      1. (If on Pi/Debian): `sudo apt-get install -y python3-pip`
      2. (Everywhere): `pip3 install ansible`
-  2. Install requirements: `ansible-galaxy collection install -r requirements.yml`
-  3. Make copies of the following files and customize them to your liking:
+  2. Clone this repository: `git clone https://github.com/geerlingguy/internet-pi.git`, then enter the repository directory: `cd internet-pi`.
+  3. Install requirements: `ansible-galaxy collection install -r requirements.yml`
+  4. Make copies of the following files and customize them to your liking:
      - `example.inventory.ini` to `inventory.ini` (replace IP address with your Pi's IP, or comment that line and uncomment the `connection=local` line if you're running it on the Pi you're setting up).
      - `example.config.yml` to `config.yml`
-  4. Run the playbook: `ansible-playbook main.yml`
+  5. Run the playbook: `ansible-playbook main.yml`
 
 > **If running locally on the Pi**: You may encounter an error like "Error while fetching server API version". If you do, please either reboot or log out and log back in, then run the playbook again.
 
